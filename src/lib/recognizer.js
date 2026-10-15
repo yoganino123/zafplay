@@ -118,6 +118,9 @@ const DEFS = {
     [arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.85, 0.65], [0.7, 1]]],
     // ekor lurus ke bawah
     [arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.88, 1]]],
+    // ekor pendek / hampir tidak ada (sering ditulis anak-anak, mirip 0)
+    [arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.88, 0.62]]],
+    [[...arc(0.5, 0.3, 0.38, 0.3, 30, -330, 24), [0.85, 0.45], [0.8, 0.7]]],
     // satu goresan: lingkaran lalu ekor melengkung
     [[...arc(0.5, 0.3, 0.38, 0.3, 60, -300, 22), [0.88, 0.35], [0.82, 0.75], [0.55, 1], [0.3, 0.95]]],
   ],
@@ -157,6 +160,8 @@ const CONFUSABLE = {
   0: '69', 1: '7', 2: '7', 3: '58', 4: '9', 5: '368', 6: '058', 7: '12', 8: '9036', 9: '804',
 }
 const MARGIN = 1.35
+// Pasangan "yang diharapkan + tebakan" yang butuh toleransi lebih besar.
+const MARGIN_PAIR = { 90: 1.9, 98: 1.5 }
 
 // hint (opsional): angka yang diharapkan. Jika tebakan terbaik adalah angka yang mirip
 // dan jarak ke angka yang diharapkan hampir sama dekat, anggap anak menulis angka yang diharapkan.
@@ -170,7 +175,7 @@ export function recognizeStrokes(strokes, uid, hint) {
     if (d < (per[t.digit] ?? Infinity)) per[t.digit] = d
     if (d < bd) { bd = d; best = t.digit }
   }
-  if (hint && hint !== best && CONFUSABLE[best]?.includes(hint) && per[hint] <= bd * MARGIN) return hint
+  if (hint && hint !== best && CONFUSABLE[best]?.includes(hint) && per[hint] <= bd * (MARGIN_PAIR[hint + best] ?? MARGIN)) return hint
   return best
 }
 
