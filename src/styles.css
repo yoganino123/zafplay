@@ -136,13 +136,18 @@ h1, h2 { margin: 0; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 @keyframes pulse { to { transform: scale(1.15); } }
 
-/* Zafplay: gambar & hub game */
+/* Zafplay: gambar & hub game (responsif) */
 .pic, .pic-fallback { display: inline-block; object-fit: contain; }
-.pic.hero, .pic-fallback.hero { width: 120px; height: 120px; font-size: 5rem; line-height: 120px; }
-.games { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin: 16px 0; }
-.card.game { width: 170px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pic.hero, .pic-fallback.hero { width: clamp(100px, 28vw, 170px); height: clamp(100px, 28vw, 170px); font-size: clamp(4rem, 16vw, 7rem); line-height: clamp(100px, 28vw, 170px); }
+.games { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; max-width: 760px; margin: 12px 0; }
+.card.game { width: 100%; min-width: 0; padding: 14px 10px; gap: 6px; }
+.card.game b { font-size: clamp(1rem, 4vw, 1.25rem); overflow-wrap: anywhere; }
+.card.game small { font-size: clamp(.8rem, 3vw, .95rem); }
 .card.game.soon { opacity: .6; border: 3px dashed #a5b4fc; background: rgba(255, 255, 255, .55); cursor: default; }
-.gicon { width: 84px; height: 84px; font-size: 3.5rem; line-height: 84px; text-align: center; }
+.gicon { width: 100%; max-width: 190px; aspect-ratio: 1; height: auto; font-size: clamp(3.5rem, 18vw, 7rem); line-height: 1; display: flex; align-items: center; justify-content: center; }
+@media (min-width: 640px) { .games { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+@media (min-width: 1000px) { .games { grid-template-columns: repeat(3, 1fr); max-width: 900px; } }
+@media (max-width: 340px) { .games { grid-template-columns: 1fr; } }
 
 /* Koin & Garasi Robot */
 .coins { background: #fef3c7; color: #92400e; font-weight: 800; border-radius: 999px; padding: 4px 14px; margin: 0; }
@@ -171,3 +176,27 @@ h1, h2 { margin: 0; }
 .buy-panel small { color: #94a3b8; }
 .btn.buy { background: #f59e0b; box-shadow: 0 4px 0 #b45309; color: #1c1917; }
 .maxed { color: #fbbf24; font-weight: 800; }
+
+/* Halaman utama: Zafran besar & ceria */
+.hero-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
+.hero-wrap::before {
+  content: ''; position: absolute; width: 115%; aspect-ratio: 1; border-radius: 50%; z-index: 0;
+  background: radial-gradient(circle, #fde68a 0%, #fbcfe8 45%, rgba(165, 180, 252, 0) 70%);
+  animation: glow 3s ease-in-out infinite;
+}
+.pic.hero.xl, .pic-fallback.hero.xl {
+  position: relative; z-index: 1;
+  width: clamp(190px, 52vw, 320px); height: clamp(190px, 52vw, 320px);
+  font-size: clamp(8rem, 30vw, 13rem); line-height: clamp(190px, 52vw, 320px);
+  filter: drop-shadow(0 12px 14px rgba(79, 70, 229, .3));
+  animation: floaty 2.6s ease-in-out infinite;
+}
+.logo {
+  background: linear-gradient(90deg, #4f46e5, #ec4899, #f59e0b);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  font-size: clamp(2.6rem, 11vw, 4.5rem); letter-spacing: 1px;
+  filter: drop-shadow(0 3px 0 rgba(255, 255, 255, .9));
+}
+@keyframes floaty { 50% { transform: translateY(-12px) rotate(2deg); } }
+@keyframes glow { 50% { transform: scale(1.06); opacity: .8; } }
+@media (prefers-reduced-motion: reduce) { .hero.xl, .hero-wrap::before { animation: none; } }

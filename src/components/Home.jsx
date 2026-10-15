@@ -21,7 +21,9 @@ export default function Home({ users, onPick, onAdd }) {
 
   return (
     <div className="screen center">
-      <Pic name="zafran.png" fallback="🦖" className="hero" alt="Zafran" />
+      <div className="hero-wrap">
+        <Pic name="zafran.png" fallback="🦖" className="hero xl" alt="Zafran" />
+      </div>
       <h1 className="logo">Zafplay</h1>
       <p className="sub">Yok Main ?</p>
 
