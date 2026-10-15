@@ -73,7 +73,8 @@ export default function Game({ user, level, onFinish, onQuit }) {
     if (!strokes.length) return
     const expected = String(s.q.ans)
     const groups = groupStrokes(strokes, expected.length)
-    const digits = groups.map((g) => recognizeStrokes(g.strokes, user.id))
+    const exact = groups.length === expected.length
+    const digits = groups.map((g, i) => recognizeStrokes(g.strokes, user.id, exact ? expected[i] : undefined))
     const guess = digits.join('')
     setPreview(guess)
     if (groups.length < expected.length && !force) return // tunggu angka berikutnya

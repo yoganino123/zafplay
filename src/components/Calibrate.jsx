@@ -3,9 +3,10 @@ import Pad from './Pad.jsx'
 import { addSamples } from '../lib/storage.js'
 import { invalidateUser } from '../lib/recognizer.js'
 
-const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+const ROUND = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+const DIGITS = [...ROUND, ...ROUND] // 2 putaran agar contoh tulisan lebih banyak
 
-// Pemain menulis angka 0-9 sekali agar tebakan lebih akurat untuk gaya tulisannya.
+// Pemain menulis angka 0-9 dua kali agar tebakan lebih akurat untuk gaya tulisannya.
 export default function Calibrate({ user, onDone }) {
   const padRef = useRef(null)
   const [i, setI] = useState(0)

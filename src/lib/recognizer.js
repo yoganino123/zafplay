@@ -109,8 +109,18 @@ const DEFS = {
   5: [[[[0.85, 0], [0.2, 0], [0.15, 0.45], ...arc(0.5, 0.7, 0.42, 0.3, 250, 500, 14)]]],
   6: [[[[0.8, 0.05], [0.45, 0.25], [0.15, 0.55], [0.1, 0.68]], arc(0.5, 0.68, 0.4, 0.32, 0, 360, 24)]],
   7: [[[[0.1, 0], [0.9, 0], [0.65, 0.5], [0.4, 1]]]],
-  8: [[arc(0.5, 0.25, 0.33, 0.25, 0, 360, 20), arc(0.5, 0.75, 0.4, 0.25, 0, 360, 20)]],
-  9: [[arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.85, 0.65], [0.7, 1]]]],
+  8: [
+    [arc(0.5, 0.25, 0.33, 0.25, 0, 360, 20), arc(0.5, 0.75, 0.4, 0.25, 0, 360, 20)],
+    // 8 satu goresan (bentuk "S" lalu menutup)
+    [[...arc(0.5, 0.27, 0.32, 0.25, 330, 150, 12), ...arc(0.5, 0.74, 0.4, 0.26, 240, -80, 16)]],
+  ],
+  9: [
+    [arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.85, 0.65], [0.7, 1]]],
+    // ekor lurus ke bawah
+    [arc(0.5, 0.3, 0.38, 0.3, 0, 360, 22), [[0.88, 0.3], [0.88, 1]]],
+    // satu goresan: lingkaran lalu ekor melengkung
+    [[...arc(0.5, 0.3, 0.38, 0.3, 60, -300, 22), [0.88, 0.35], [0.82, 0.75], [0.55, 1], [0.3, 0.95]]],
+  ],
 }
 
 const BUILTIN = []
@@ -142,14 +152,25 @@ function userTemplates(uid) {
   return userCache[uid]
 }
 
-export function recognizeStrokes(strokes, uid) {
+// Pasangan angka yang sering tertukar pada tulisan anak-anak.
+const CONFUSABLE = {
+  0: '69', 1: '7', 2: '7', 3: '58', 4: '9', 5: '368', 6: '058', 7: '12', 8: '9036', 9: '804',
+}
+const MARGIN = 1.35
+
+// hint (opsional): angka yang diharapkan. Jika tebakan terbaik adalah angka yang mirip
+// dan jarak ke angka yang diharapkan hampir sama dekat, anggap anak menulis angka yang diharapkan.
+export function recognizeStrokes(strokes, uid, hint) {
   const cand = preprocess(strokes)
   if (!cand) return '?'
   let best = '?', bd = Infinity
+  const per = {}
   for (const t of [...BUILTIN, ...userTemplates(uid)]) {
     const d = greedyMatch(cand, t.pts) * (t.user ? 0.85 : 1)
+    if (d < (per[t.digit] ?? Infinity)) per[t.digit] = d
     if (d < bd) { bd = d; best = t.digit }
   }
+  if (hint && hint !== best && CONFUSABLE[best]?.includes(hint) && per[hint] <= bd * MARGIN) return hint
   return best
 }
 
