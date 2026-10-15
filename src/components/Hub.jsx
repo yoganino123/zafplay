@@ -2,6 +2,7 @@ import Pic from './Pic.jsx'
 
 export const GAMES = [
   { id: 'mathkilat', name: 'Math Kilat', desc: 'Tambah & kurang secepat kilat', img: 'mathkilat.png', emoji: '🧮' },
+  { id: 'garage', name: 'Garasi Robot', desc: 'Rakit robot raksasa pakai koin', img: 'garage.png', emoji: '🤖' },
 ]
 
 export default function Hub({ user, onPlay, onBack }) {
@@ -10,6 +11,7 @@ export default function Hub({ user, onPlay, onBack }) {
       <Pic name="console.png" fallback="🕹️" className="hero" alt="Game" />
       <h1>Halo, {user.name}!</h1>
       <p className="sub">Mau main game apa hari ini?</p>
+      <p className="coins">🪙 {user.coins || 0} koin</p>
 
       <div className="games">
         {GAMES.map((g) => (

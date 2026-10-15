@@ -143,3 +143,31 @@ h1, h2 { margin: 0; }
 .card.game { width: 170px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .card.game.soon { opacity: .6; border: 3px dashed #a5b4fc; background: rgba(255, 255, 255, .55); cursor: default; }
 .gicon { width: 84px; height: 84px; font-size: 3.5rem; line-height: 84px; text-align: center; }
+
+/* Koin & Garasi Robot */
+.coins { background: #fef3c7; color: #92400e; font-weight: 800; border-radius: 999px; padding: 4px 14px; margin: 0; }
+.coin-earn { margin: 0; font-size: 1.3rem; font-weight: 800; color: #b45309; }
+.garage { background: radial-gradient(circle at 50% 30%, #1e1b4b, #020617); color: #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 100%; }
+.garage .btn.ghost { background: #1e293b; color: #e2e8f0; border-color: #334155; box-shadow: 0 3px 0 #0f172a; }
+.g-top { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 480px; }
+.robot-name { background: transparent; border: 0; border-bottom: 2px dashed #475569; color: #67e8f9; text-align: center; font-size: 1.4rem; font-weight: 800; width: min(80%, 320px); padding: 4px; outline: none; }
+.g-progress { width: min(80%, 320px); height: 10px; border-radius: 6px; background: #1e293b; overflow: hidden; }
+.g-progress div { height: 100%; background: linear-gradient(90deg, #22d3ee, #fbbf24); transition: width .4s; }
+.robot-svg { width: min(88vw, 330px); max-height: 52vh; overflow: visible; }
+.rpart { cursor: pointer; transition: transform .3s; }
+.rpart.ghost { opacity: .45; }
+.rpart.sel { filter: brightness(1.25); }
+.rpart.bump { animation: bump .6s ease-out; }
+.pulse { animation: pulse 1.4s ease-in-out infinite; }
+@keyframes bump { 0% { transform: scale(1); } 30% { transform: scale(1.25) rotate(-4deg); filter: brightness(2.2); } 100% { transform: scale(1); } }
+@keyframes pulse { 50% { opacity: .55; } }
+.slot-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 480px; }
+.chip { background: #1e293b; border: 2px solid #334155; border-radius: 14px; padding: 6px 2px; display: flex; flex-direction: column; align-items: center; gap: 1px; color: #e2e8f0; }
+.chip.on { border-color: #22d3ee; background: #0e3a4a; }
+.chip span { font-size: 1.4rem; }
+.chip small { font-size: .65rem; }
+.chip i { font-style: normal; font-size: .7rem; min-height: 1em; }
+.buy-panel { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #0f172a; border: 2px solid #334155; border-radius: 18px; padding: 12px 16px; width: 100%; max-width: 480px; }
+.buy-panel small { color: #94a3b8; }
+.btn.buy { background: #f59e0b; box-shadow: 0 4px 0 #b45309; color: #1c1917; }
+.maxed { color: #fbbf24; font-weight: 800; }

@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react'
 import Home from './components/Home.jsx'
 import Hub from './components/Hub.jsx'
+import Garage from './components/Garage.jsx'
 import Menu from './components/Menu.jsx'
 import Game from './components/Game.jsx'
 import Result from './components/Result.jsx'
 import Calibrate from './components/Calibrate.jsx'
 import { loadDb, saveDb, removeSamples, MAX_USERS } from './lib/storage.js'
+import { coinsFor } from './lib/robot.js'
 import { invalidateUser } from './lib/recognizer.js'
 
 export default function App() {
   const [db, setDb] = useState(loadDb)
   const [screen, setScreen] = useState('home')
   const [uid, setUid] = useState(null)
-  const [last, setLast] = useState({ score: 0, record: false })
+  const [last, setLast] = useState({ score: 0, record: false, coins: 0 })
   const [round, setRound] = useState(0)
 
   useEffect(() => saveDb(db), [db])
@@ -24,7 +26,7 @@ export default function App() {
   const addUser = (name, avatar) => {
     if (db.users.length >= MAX_USERS) return
     const id = 'u' + Date.now().toString(36)
-    setDb((d) => ({ ...d, users: [...d.users, { id, name, avatar, level: 1, best: {}, played: 0 }] }))
+    setDb((d) => ({ ...d, users: [...d.users, { id, name, avatar, level: 1, best: {}, played: 0, coins: 0, robot: {}, robotName: '' }] }))
     setUid(id)
     setScreen('hub')
   }
@@ -41,12 +43,14 @@ export default function App() {
   const finish = (score) => {
     const prevBest = user.best?.[user.level] || 0
     const record = score > prevBest
+    const earned = coinsFor(score, record)
     patchUser(user.id, (u) => ({
       ...u,
       played: (u.played || 0) + 1,
       best: { ...u.best, [u.level]: Math.max(prevBest, score) },
+      coins: (u.coins || 0) + earned,
     }))
-    setLast({ score, record })
+    setLast({ score, record, coins: earned })
     setScreen('result')
   }
 
@@ -62,7 +66,21 @@ export default function App() {
       {screen === 'home' && (
         <Home users={db.users} onPick={(id) => { setUid(id); setScreen('hub') }} onAdd={addUser} />
       )}
-      {screen === 'hub' && <Hub user={user} onPlay={() => setScreen('menu')} onBack={() => setScreen('home')} />}
+      {screen === 'hub' && <Hub user={user} onPlay={(id) => setScreen(id === 'garage' ? 'garage' : 'menu')} onBack={() => setScreen('home')} />}
+      {screen === 'garage' && (
+        <Garage
+          user={user}
+          onBack={() => setScreen('hub')}
+          onRename={(n) => patchUser(user.id, (u) => ({ ...u, robotName: n }))}
+          onBuy={(slot, price) =>
+            patchUser(user.id, (u) => ({
+              ...u,
+              coins: (u.coins || 0) - price,
+              robot: { ...u.robot, [slot]: ((u.robot || {})[slot] || 0) + 1 },
+            }))
+          }
+        />
+      )}
       {screen === 'menu' && (
         <Menu
           user={user}
@@ -83,6 +101,8 @@ export default function App() {
           level={user.level}
           score={last.score}
           record={last.record}
+          coins={last.coins}
+          onGarage={() => setScreen('garage')}
           onAgain={start}
           onHome={() => setScreen('menu')}
         />
